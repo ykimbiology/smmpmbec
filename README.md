@@ -14,8 +14,8 @@ http://www.ncbi.nlm.nih.gov/pubmed/19948066
 
 Requirements
 ============
-1) linux environment
-2) GSL [http://www.gnu.org/software/gsl/]
+1) Linux environment with a gcc compiler (e.g. Ubuntu).
+2) Gnu Scientific Library(GSL) [http://www.gnu.org/software/gsl/]
 
 Compiling
 =========

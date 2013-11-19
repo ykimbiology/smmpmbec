@@ -1,0 +1,21 @@
+
+
+import numpy as np
+
+def read_matrix():
+    mat = []
+    fname = 'covar_matrix.txt'
+    lines=open(fname,'r').readlines()
+    for l in lines[1:]:
+        l = l.strip()
+        row = l.split()
+        row = map(float, row[1:])
+        mat.append(row)
+        print len(row)
+    mat = np.array(mat)
+    return mat
+
+
+if __name__ == '__main__':
+    mat = read_matrix()
+    

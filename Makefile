@@ -6,8 +6,11 @@ OBJECTS = BPException.o BPMath.o Dataset.o Letter.o MinimizerBase.o NumVec.o SMM
 
 
 $(EXECUTABLE) :  $(OBJECTS)
-	$(COMPILER) $(FLAGS) -o $(EXECUTABLE) $(OBJECTS)
+#	$(COMPILER) $(FLAGS) -o $(EXECUTABLE) $(OBJECTS)
+	$(COMPILER) $(OBJECTS)  $(FLAGS) -o $(EXECUTABLE) 
 
 %.o : %.cpp
 	$(COMPILER) -o $*.o -c $*.cpp
 
+clean:
+	rm *.o

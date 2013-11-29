@@ -5,6 +5,7 @@ Show how the PMBEC covariance matrix was inverted.
 
 """
 import math
+import random
 
 import numpy as np
 from scipy.stats import pearsonr
@@ -85,10 +86,35 @@ def analyze_pmbec(offset=0.05):
 
 def analyze_blosum():
     m = read_matrix(fname_blosum, header=True)
+    m = (m + m.transpose())/2.0  # To ensure that the matrix is symmetric. This step does not change results.
     m_inv = np.linalg.inv(m)
+
+    w,v = np.linalg.eig(m)
+    #w.sort()
+
+    #Numerically determine whether x*M*x >= for randomly sampled vectors, x:
+    n = 10000
+    xlist = []
+    for i in range(n):
+        x = [random.random() for j in range(20)]
+        x = np.array(x)
+        x = x - np.mean(x) # x = centered vector of length 20.
+        x.shape = (1,20)
+        xvalue = x.dot(m).dot(x.transpose())
+#        xvalue = x.dot(m_inv).dot(x.transpose())
+        xlist.append(xvalue[0][0])
+    plt.hist(xlist); plt.xlabel('x*M*x'); plt.ylabel('freq'); plt.show()
+    print 'Properties of the blosum matrix'
+    print '======================================'
     print 'M = BLOSUM62 matrix'
-    print 'det(M) ', np.linalg.det(m)
-    return m, m_inv
+    print 'det(M) = ', np.linalg.det(m)
+    print 'Sorted_eigenvalues = ', w
+    print '======================================'
+    print '1) The matrix is invertible because its determinant is not zero. See: [http://en.wikipedia.org/wiki/Invertible_matrix] '
+    print 'This has been checked using m.dot(m_inv).'
+    print ''
+    print '2) The matrix is not positive definite because one of its eigenvalues is a negative.'
+    return m, m_inv,w,v, xlist
 
 def get_condition_number(m):
     """
@@ -104,9 +130,9 @@ if __name__ == '__main__':
     fname_pmbec_inv = 'InverseCovariance.txt' #This was used in the smmpmbec code.
 
 
-    m_inv = read_matrix(fname_pmbec_inv,header=False)
-    m = analyze_pmbec(offset=0.05)
-    #m, m_inv = analyze_blosum()
+    #m_inv = read_matrix(fname_pmbec_inv,header=False)
+    #m = analyze_pmbec(offset=0.05)
+    result = analyze_blosum()
 
 
     

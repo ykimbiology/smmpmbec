@@ -27,6 +27,18 @@ def read_matrix(fname, header=False):
     assert mat.shape == (20,20)
     return mat
 
+def write_matrix(m, fname):
+    """
+    """
+    aalist = list('ACDEFGHIKLMNPQRSTVWY')
+    f=open(fname,'w')
+    f.write('* '+' '.join(aalist)+'\n')
+    for aa,row in zip(aalist,m):
+        row = [aa]+list(row)
+        line = ' '.join(map(str, row))
+        f.write(line+'\n')
+    f.close()
+
 
 def compare_eig(ma,mb):
     """
@@ -125,14 +137,35 @@ def get_condition_number(m):
     return cond_num
 
 if __name__ == '__main__':
-    fname_pmbec = 'cov_matrix.pmbec.mat'
-    fname_blosum = 'ncbi.blosum62.sij.mat'
-    fname_pmbec_inv = 'InverseCovariance.txt' #This was used in the smmpmbec code.
-
-
+    #fname_pmbec = 'cov_matrix.pmbec.mat'
+    #fname_pmbec_inv = 'InverseCovariance.txt' #This was used in the smmpmbec code.
     #m_inv = read_matrix(fname_pmbec_inv,header=False)
     #m = analyze_pmbec(offset=0.05)
+
+
+    fname_blosum = 'ncbi.blosum62.sij.mat'
     result = analyze_blosum()
+    m = result[0]
+    m_inv = result[1]
+    write_matrix(m, 'blosum62.mat')
+    write_matrix(m_inv, 'blosum62.inv.mat')
+
+    #Check that m_inv is really the inverse of 'm'.
+    m_identity = m.dot(m_inv)
+    #Set very small values to zeros.
+    xsmall = 0.00001
+    for i in range(m.shape[0]):
+        for j in range(m.shape[1]):
+            if abs(m_identity[i,j]) < xsmall:
+                m_identity[i,j] = 0.0
+            if abs(1.0 - m_identity[i,j]) < xsmall:
+                m_identity[i,j] = 1.0
+    plt.imshow(m_identity)
+    plt.show()
+    assert False not in (np.eye(20).flatten() == m_identity.flatten())
+    
+
+
 
 
     

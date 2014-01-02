@@ -22,7 +22,7 @@ must not be misrepresented as being the original software.
 distribution.
 */
 
-// 20071115: SMM-BP uses a Bayesian prior derived from randomized peptide library data
+// 20071115: SMM-PMBEC uses a Bayesian prior derived from randomized peptide library data
 //   to model binding specificity of peptide:protein complexes.
 //   The program trains a scoring matrix given a list of peptides with corresponding measured
 //	 binding affinities.
@@ -57,7 +57,7 @@ string AutoFileName(const string & original, const string &prefix)
 void InvalidParametersMessage(bool usage_only)
 {
 	if(usage_only)
-		cout << "Stablized Matrix Method (SMM-BP) release (2.01)"<< endl;
+		cout << "Stablized Matrix Method (SMM) with a PMBEC covariance matrix as a prior."<< endl;
 	else
 		cout << "Invalid parameters"<< endl;
 	cout << "Usage: smmpmbec [parameter] [input filename] [output filename (optional)]" << endl;

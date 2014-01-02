@@ -115,12 +115,17 @@ CNumVec CSMMCrossValidate::_Train(const CSMMSet &train, const InitParamCV & init
 		param=para0;
 		// Optimize
 		dist = MinimizeSteepestDescent(param,m_precision);
+		cout << "cv_dist\t" << dist << endl;
 	}
 	// Calculate the solution as an average of the individual cross validation solutions
 	CNumVec mean_solution(m_solver[0].GetX().size());
 	mean_solution = 0;
-	for(unsigned c=0; c<cv_num; c++)
-		mean_solution+=m_solver[c].GetX();
+	for (unsigned c=0; c<cv_num; c++) {
+		mean_solution += m_solver[c].GetX();
+		cout << "x\t" << m_solver[c].GetX() << endl;
+		cout << "lambda\t" << m_solver[c].GetLambda() << endl;
+	}
+
 	mean_solution*=1.0/cv_num;
 	if(clog_detail.back()>=MEDIUM)
 		clog << endl << "Dist:\t" << dist << "\tLambda:\t" << m_solver[0].GetLambda() << "Solution:\t" << mean_solution;
@@ -128,10 +133,13 @@ CNumVec CSMMCrossValidate::_Train(const CSMMSet &train, const InitParamCV & init
 }
 
 
+/**
+ * INPUT: param, regularization parameters.
+ * OUTPUT: Returns an internal cross-validated distance between predicted and measured affinities.
+ *
+ */
 double CSMMCrossValidate::Distance(const CNumVec &param)
 {
-	// Makes predictions on all blind sets based on the optimal solution for training sets with parameter param
-	// Distance is given relative to
 	double dist=0;
 	unsigned count=0;
 	for(unsigned c=0; c<m_train_set.SubsetNum(); c++)
@@ -144,7 +152,7 @@ double CSMMCrossValidate::Distance(const CNumVec &param)
 		dist +=blind.XDistance(solver.GetX());
 		count+=blind.ElementNumber();
 	}
-	dist/=count;
+	dist/=count; // YK: Mean of sum of squared differences between predicted and measured in log space.
 
 	if(clog_detail.back()>DETAILED)
 		clog << endl << "Dist\t"  << dist << "\tLambda\t"  << param;
@@ -163,7 +171,7 @@ double CSMMCrossValidate::Gradient(const CNumVec &param, CNumVec &gradient)
 		CNumVec param2=param;
 		param2[p]+=delta;
 		double dist=Distance(param2);
-		gradient[p]=(dist-dist0)/delta;
+		gradient[p]=(dist-dist0)/delta; // YK: Finite difference technique to calculate the gradient.
 	}
 	return(dist0);
 

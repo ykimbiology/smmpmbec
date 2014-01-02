@@ -38,6 +38,9 @@ CMinimizerBase::~CMinimizerBase(void)
 
 // ex_ofstream _log;
 
+/**
+ *
+ */
 double CMinimizerBase::LineDistance(double x)
 {
 	CNumVec pos;
@@ -50,6 +53,9 @@ double CMinimizerBase::LineDistance(double x)
 }
 
 
+/**
+ *
+ */
 double CMinimizerBase::LineMinimizer(CNumVec &position, double dist0, const CNumVec &direction, bool roughly)
 {
 	LM_direction=&direction;
@@ -233,7 +239,9 @@ double	CMinimizerBase::MinimizeSteepestDescent(CNumVec &param, const double min_
 //		AdjustParameters(param);
 		last_dist=Gradient(param,gradient);
 		double gradient_norm=gradient.ScalarProduct(gradient);
-		if(gradient_norm==0.0)
+		cout << "MinimizeSteepestDescent gradient_norm\t" << gradient_norm << endl;
+
+		if (gradient_norm==0.0)
 			return(last_dist);
 		double normalization= -sqrt(min_precision/gradient_norm);
 		gradient*=normalization;

@@ -67,6 +67,7 @@ CNumVec	CSMMCrossValidate::Train(const CSMMSet &train_set, const InitParamCV & i
 		mean_solution*=1.0/count_solution;
 		if(clog_detail.back()>=MEDIUM)
 		clog << endl << "Final:\t\t" << mean_solution;
+		cout << "model_final\t" << mean_solution << endl;
 
 		return(CNumVec(mean_solution));
 	} else {
@@ -122,11 +123,22 @@ CNumVec CSMMCrossValidate::_Train(const CSMMSet &train, const InitParamCV & init
 	mean_solution = 0;
 	for (unsigned c=0; c<cv_num; c++) {
 		mean_solution += m_solver[c].GetX();
-		cout << "x\t" << m_solver[c].GetX() << endl;
-		cout << "lambda\t" << m_solver[c].GetLambda() << endl;
+		cout << "x_i\t" << m_solver[c].GetX() << endl;
 	}
 
+	CNumVec lambdas_log(m_solver[0].GetLambda().size());
+	lambdas_log = 0;
+	for (int i=0; i<lambdas_log.size(); i++) {
+		lambdas_log[i] = log(m_solver[0].GetLambda()[i]);  // In log() space; log="natural log".
+	}
+	//cout << "lambdas_log\t" << m_solver[0].GetLambda() << endl; // YK: For one 10-fold cv, there is one set of lambdas optimized.
+	cout << "lambdas_log\t" << lambdas_log << endl;
+
+	cout << "dfdlambdas_log\t" << gradient_current << endl;
+
 	mean_solution*=1.0/cv_num;
+	cout << "x_mean\t" << mean_solution << endl;
+
 	if(clog_detail.back()>=MEDIUM)
 		clog << endl << "Dist:\t" << dist << "\tLambda:\t" << m_solver[0].GetLambda() << "Solution:\t" << mean_solution;
 	return (CNumVec(mean_solution));
@@ -172,6 +184,7 @@ double CSMMCrossValidate::Gradient(const CNumVec &param, CNumVec &gradient)
 		param2[p]+=delta;
 		double dist=Distance(param2);
 		gradient[p]=(dist-dist0)/delta; // YK: Finite difference technique to calculate the gradient.
+		gradient_current = gradient;    // YK: Keep a record of the current gradient.
 	}
 	return(dist0);
 

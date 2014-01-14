@@ -76,4 +76,5 @@ private:
 	double			m_precision;
 	Vec<CSMMSolve>	m_solver;
 	CVSet<CSMMSet>  m_train_set;	
+	CNumVec gradient_current; // YK: To keep record gradient of cv distance function.
 };

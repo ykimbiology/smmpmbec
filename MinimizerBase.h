@@ -31,7 +31,7 @@ public:
 	CMinimizerBase(void);
 	~CMinimizerBase(void);
 public:
-	double	MinimizeConjugateGradient(CNumVec &startparam, const double precision, unsigned restart_repeats=5); 
+	double	MinimizeConjugateGradient(CNumVec &param, const double min_precision, unsigned restart_repeats);
 	double	MinimizeSteepestDescent(CNumVec &startparam, const double precision); 
 	double	MinimizeSteepestDescentOneDimensional(CNumVec &param, const double min_precision);
 	void	TestGradient(const CNumVec &param, double delta);

@@ -63,6 +63,9 @@ template <class Set> void CVSet<Set>::PoolBlindSets(Set &pool)
 		pool.AddSet(m_blind[s]);
 }
 
+/**
+ * For one cross-validation, calculate which partitions are blind and train data.
+ */
 template <class Set> void CVSet<Set>::GenerateSubsets(unsigned subnum)
 {
 	if(subnum>Set::ElementNumber())
@@ -76,6 +79,9 @@ template <class Set> void CVSet<Set>::GenerateSubsets(unsigned subnum)
 		ord.push_back(i);
 
 	random_shuffle(ord.begin(),ord.end());
+
+	cout << endl;
+	cout << "cv_partitions\t" << ord << endl;
 
 	for(unsigned cv=0; cv<subnum; cv++)
 	{

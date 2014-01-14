@@ -39,7 +39,8 @@ CMinimizerBase::~CMinimizerBase(void)
 // ex_ofstream _log;
 
 /**
- *
+ * INPUT: LM_direction, LM_start_pos
+ * OUTPUT: Returns the cv distance if you move in 'LM_direction' direction by amount 'x'.
  */
 double CMinimizerBase::LineDistance(double x)
 {
@@ -83,13 +84,15 @@ double CMinimizerBase::LineMinimizer(CNumVec &position, double dist0, const CNum
 		pmin=pnext;
 		dmin=dnext;
 
-		pnext*=2;
+		pnext*=2; // YK: Double how much you move along the direction.
 		dnext=LineDistance(pnext);
 	}
 	while(dmin>dnext);
 
 	if(roughly && pmin>50) // stops exact determination if minimum is far from optimal value
 	{
+		//cout << "DEBUG roughly and pmin " << roughly << " " << pmin << endl;
+
 		CNumVec p=direction;
 		p*=pleft;
 		position+=p;
